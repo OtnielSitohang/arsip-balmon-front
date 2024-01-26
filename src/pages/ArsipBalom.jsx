@@ -1,9 +1,8 @@
-// ArsipBalom.js
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import Api from '../API/InserAPI';
 import '../css/ArsipBalmon.css';
-import FormData from '../component/FormData'; 
+import FormData from '../component/FormData';
 
 const ArsipBalom = () => {
   const [kodeArsip, setKodeArsip] = useState('');
@@ -34,24 +33,18 @@ const ArsipBalom = () => {
     const { data, message, error } = await Api.fetchData(kodeArsip);
 
     if (data) {
-      const {
-        klasifikasi_arsip, nama_klasifikasi_arsip, kode_arsip, Jenis_arsip,
-        Klasifikasi_keamanan, hak_akses, tingkat_akses, unit_pengolahan,
-        jumlah_lembar, kurun_waktu, lokasi_laci, tingkat_perkembangan
-      } = data;
-
       setData(data);
       setMessage(message);
       setErrorMessage('');
-      setKodeArsip(kode_arsip || '');
+      setKodeArsip(data.kode_arsip || '');
       setUraianBerkas('');
       setJumlahFolder('');
       setNomorIsiBerkas('');
       setUraianIsi('');
       setKurunWaktu('');
-      setJumlahLembar(jumlah_lembar || '');
-      setPerkembangan(tingkat_perkembangan || '');
-      setLokasiLaci(lokasi_laci || '');
+      setJumlahLembar(data.jumlah_lembar || '');
+      setPerkembangan(data.tingkat_perkembangan || '');
+      setLokasiLaci(data.lokasi_laci || '');
       setAktif('');
       setInaktif('');
       setKeterangan('');
@@ -64,13 +57,16 @@ const ArsipBalom = () => {
     }
   };
 
-  
   const handleRekap = async () => {
+    if (!validateFields()) {
+      return;
+    }
+
     const { data } = await Api.fetchData(kodeArsip);
     const kode_klasifikasi = data?.kode_arsip || '';
     const klasifikasi_keamanan_fetched = data?.Klasifikasi_keamanan || '';
     const tingkat_akses_fetched = data?.tingkat_akses || '';
-  
+
     const arsipData = {
       kode_klasifikasi,
       uraian_berkas,
@@ -89,18 +85,16 @@ const ArsipBalom = () => {
       tingkat_akses: tingkat_akses_fetched,
       tanggal_diinput: new Date().toISOString(),
     };
-  
+
     try {
       const { success, message, error } = await Api.insertData(arsipData);
-  
+
       if (success) {
-        // Use SweetAlert for success
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Data inserted successfully!',
+          text: message || 'Data inserted successfully!',
         }).then(() => {
-          // Reset state and reload the page
           setErrorMessage('');
           setMessage('');
           setKodeArsip('');
@@ -108,33 +102,38 @@ const ArsipBalom = () => {
           window.location.reload();
         });
       } else {
-        // Use SweetAlert for error
         Swal.fire({
           icon: 'error',
           title: 'Error!',
-          text: `Error: ${error ? error[1] : 'Unknown error'}`,  // Access error[1]
+          text: `Error: ${error ? error[1] : 'Unknown error'}`,
         }).then(() => {
           setErrorMessage(error);
-          // Reload the page in case of an error
-          window.location.reload();
         });
       }
     } catch (error) {
-      // Use SweetAlert for API request error
       Swal.fire({
         icon: 'error',
         title: 'Error!',
         text: 'Error during API request',
       }).then(() => {
         console.error("API Request Error:", error);
-        // Reload the page in case of an error
-        window.location.reload();
+        setErrorMessage('Error during API request');
       });
     }
   };
-  
 
-  
+  const validateFields = () => {
+    // Add validation logic here, return false if validation fails
+    if (!uraian_berkas || !jumlahFolder || !nomorIsiBerkas || !uraian_isi || !kurun_waktu || !jumlah_lembar || !perkembangan || !lokasi_laci || !aktif || !inaktif || !keterangan || !folder) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error!',
+        text: 'Please fill in all required fields.',
+      });
+      return false;
+    }
+    return true;
+  };
 
   return (
     <div className="container">

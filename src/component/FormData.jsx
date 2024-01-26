@@ -123,7 +123,7 @@ class FormData extends React.Component {
             </option>
             <option value="Asli">Asli</option>
             <option value="Fotocopy">Fotocopy</option>
-            <option value="AsliFotocopy">Asli dan Fotocopy</option>
+            <option value="Asli dan Fotocopy">Asli dan Fotocopy</option>
           </select>
         </div>
 
