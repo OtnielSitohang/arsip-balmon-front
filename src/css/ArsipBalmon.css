@@ -1,101 +1,93 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5;
-    margin: 0px;
-    padding: -200px;
-    display: flex;
-    align-items: flex;
-    justify-content: center;
-    height: 100vh;
-    width: 80%;
-  }
-  
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full height of the viewport */
+  overflow: hidden; /* Disable horizontal scrolling */
+}
+
+.container {
+  width: 80vw; /* 80% of the viewport width */
+  max-width: 800px; /* You can adjust the max-width as needed */
+  background-color: #fff;
+  padding: 30px; /* Adjusted padding */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Adjusted box-shadow */
+  border-radius: 10px;
+  box-sizing: border-box;
+  margin: 0 10vw; /* Center horizontally with 10% spacing on both sides */
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: 100vh; /* Full height */
+}
+
+h1 {
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+input,
+button,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+p {
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.form-group input,
+.form-control,
+textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+/* Add media queries for responsiveness */
+@media (max-width: 600px) {
   .container {
-    width: 300%; 
-    max-width: 800px; /* You can adjust the max-width as needed */
-    background-color: #fff;
-    padding: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    box-sizing: border-box;
-    margin: cemter;
+    width: 90%; /* Adjusted for smaller screens */
+    margin: 0 5vw; /* Center with 5% spacing on both sides for smaller screens */
   }
-  
-  h1 {
-    color: #333;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-  }
-  
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-    display: inline-block;
-  }
-  
-  button {
-    background-color: #4caf50;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  p {
-    color: #333;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  .form-control {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-  textarea {
-    height: 100px;
-    width: 100%;
-    resize: vertical;
-  }
-  
-  
-  /* Add media queries for responsiveness */
-  @media (max-width: 600px) {
-    .container {
-      width: 90%; /* Adjusted for smaller screens */
-    }
-  }
-  
-  
-  
+}

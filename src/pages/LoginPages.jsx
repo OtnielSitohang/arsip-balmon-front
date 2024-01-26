@@ -1,75 +1,77 @@
-import ArsipBalmon from '../pages/ArsipBalom'; // App.js
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// LoginPage.jsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import FormLogin from "../component/FormLogin";
+import { toast } from "sonner";
+import config from "../config";
 
-const LoginPage = ({ setUsername, setPassword, handleLogin }) => (
-  <div>
-    <h1>Login</h1>
-    <label>
-      Username:
-      <input
-        type="text"
-        onChange={(e) => setUsername(e.target.value)}
-      />
-    </label>
-    <br />
-    <label>
-      Password:
-      <input
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-    </label>
-    <br />
-    <button onClick={handleLogin}>Login</button>
-  </div>
-);
-
-
-const LoginPages = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const LoginPage = () => {
+  const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleLogin = async () => {
+  const handleLogin = async (userData) => {
     try {
-      const response = await fetch('http://localhost:4000/auth/login', {
+      const response = await fetch(`${config.apiUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(userData),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
+        localStorage.setItem("user", JSON.stringify(data.user));
         setLoggedIn(true);
-        console.log(response);
-        console.log(data);
+        navigate("/Input");
       } else {
-        console.error(data.message);
+        setError(data.message || 'Login failed');
       }
     } catch (error) {
       console.error('Error during login:', error);
+      setError('Error during login. Please try again.');
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setLoggedIn(false);
+  };
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setLoggedIn(true);
+    }
+  }, []);
+
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/login" element={<LoginPage setUsername={setUsername} setPassword={setPassword} handleLogin={handleLogin} />} />
-          {loggedIn ? (
-            <Route path="/" element={<Navigate to="/arsip" />} />
-            ) : (
-              <Route path="/" element={<Navigate to="/" />} />
-              )}
-          <Route path="/arsip" element={<ArsipBalmon />} />
-        </Routes>
-      </div>
-    </Router>
-   );
+    <Container className="mt-5">
+      <h1 className="text-center display-4">
+        <strong>Welcome Admin!</strong>
+      </h1>
+      {loggedIn ? (
+        <>
+          <p className="text-center lead">You are already logged in.</p>
+          <button className="btn btn-danger" onClick={handleLogout}>
+            Logout
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="text-center lead">
+            To ensure your identity, please fill out the following form:
+          </p>
+          <hr className="featurette-divider" />
+          <FormLogin handleLogin={handleLogin} />
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </>
+      )}
+    </Container>
+  );
 };
 
-export default LoginPages;
+export default LoginPage;

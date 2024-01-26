@@ -1,62 +1,140 @@
+// ArsipBalom.js
 import React, { useState } from 'react';
-import axios from 'axios';
-import '../css/ArsipBalmon.css'; 
+import Swal from 'sweetalert2';
+import Api from '../API/InserAPI';
+import '../css/ArsipBalmon.css';
+import FormData from '../component/FormData'; 
 
 const ArsipBalom = () => {
   const [kodeArsip, setKodeArsip] = useState('');
   const [data, setData] = useState(null);
-  const [uraianInformasi, setUraianInformasi] = useState(''); 
-  const [jumlahFolder, setjumlahFolder] = useState(''); 
-  const [nomorIsiBerkas, setnomorIsiBerkas] = useState(''); 
-  const [Isi, setIsi] = useState(''); 
-  const [Waktu, setWaktu] = useState(''); 
-  const [jumlahLembar, setjumlahLembar] = useState(''); 
-  const [Perkembangan, setPerkembangan] = useState(''); 
-  const [Lokasi, setLokasi] = useState(''); 
+  const [uraian_berkas, setUraianBerkas] = useState('');
+  const [jumlahFolder, setJumlahFolder] = useState('');
+  const [nomorIsiBerkas, setNomorIsiBerkas] = useState('');
+  const [uraian_isi, setUraianIsi] = useState('');
+  const [kurun_waktu, setKurunWaktu] = useState('');
+  const [jumlah_lembar, setJumlahLembar] = useState('');
+  const [perkembangan, setPerkembangan] = useState('');
+  const [lokasi_laci, setLokasiLaci] = useState('');
+  const [aktif, setAktif] = useState('');
+  const [inaktif, setInaktif] = useState('');
+  const [keterangan, setKeterangan] = useState('');
+  const [tanggalDiinput, setTanggalDiinput] = useState('');
+  const [folder, setFolder] = useState('');
   const [message, setMessage] = useState('');
-  // const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.post('http://localhost:3001/find', {
-        kode_arsip: kodeArsip
-      });
-
-      if (response.data.message === 'Data ditemukan') {
-        const fetchedData = response.data.payload && response.data.payload.data;
-
-        if (fetchedData && fetchedData.length > 0) {
-          const firstData = fetchedData[0];
-
-          setData(firstData);
-          setMessage('Data ditemukan.');
-          setErrorMessage('');
-          setUraianInformasi(''); 
-          setjumlahFolder(''); 
-          setjumlahLembar(''); 
-          setnomorIsiBerkas(''); 
-          setPerkembangan(''); 
-          setIsi(''); 
-          setLokasi(''); 
-          setWaktu(''); 
-        } else {
-          setData(null);
-          setMessage('Data tidak ditemukan.');
-          setErrorMessage('Data structure from the server is not as expected.');
-        }
-      } else {
-        setData(null);
-        setMessage('');
-        setErrorMessage(response.data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setMessage('');
-      setErrorMessage(`Error fetching data from the server: ${error.message}`);
-      setData(null);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      fetchData();
     }
   };
+
+  const fetchData = async () => {
+    const { data, message, error } = await Api.fetchData(kodeArsip);
+
+    if (data) {
+      const {
+        klasifikasi_arsip, nama_klasifikasi_arsip, kode_arsip, Jenis_arsip,
+        Klasifikasi_keamanan, hak_akses, tingkat_akses, unit_pengolahan,
+        jumlah_lembar, kurun_waktu, lokasi_laci, tingkat_perkembangan
+      } = data;
+
+      setData(data);
+      setMessage(message);
+      setErrorMessage('');
+      setKodeArsip(kode_arsip || '');
+      setUraianBerkas('');
+      setJumlahFolder('');
+      setNomorIsiBerkas('');
+      setUraianIsi('');
+      setKurunWaktu('');
+      setJumlahLembar(jumlah_lembar || '');
+      setPerkembangan(tingkat_perkembangan || '');
+      setLokasiLaci(lokasi_laci || '');
+      setAktif('');
+      setInaktif('');
+      setKeterangan('');
+      setTanggalDiinput('');
+      setFolder('');
+    } else {
+      setData(null);
+      setMessage(message);
+      setErrorMessage(error);
+    }
+  };
+
+  
+  const handleRekap = async () => {
+    const { data } = await Api.fetchData(kodeArsip);
+    const kode_klasifikasi = data?.kode_arsip || '';
+    const klasifikasi_keamanan_fetched = data?.Klasifikasi_keamanan || '';
+    const tingkat_akses_fetched = data?.tingkat_akses || '';
+  
+    const arsipData = {
+      kode_klasifikasi,
+      uraian_berkas,
+      jumlah_folder: jumlahFolder,
+      no_isi_berkas: nomorIsiBerkas,
+      uraian_isi,
+      kurun_waktu,
+      tingkat_perkembangan: perkembangan,
+      jumlah_lembar,
+      lokasi_laci,
+      folder,
+      aktif,
+      inaktif,
+      keterangan,
+      klasifikasi_keamanan: klasifikasi_keamanan_fetched,
+      tingkat_akses: tingkat_akses_fetched,
+      tanggal_diinput: new Date().toISOString(),
+    };
+  
+    try {
+      const { success, message, error } = await Api.insertData(arsipData);
+  
+      if (success) {
+        // Use SweetAlert for success
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Data inserted successfully!',
+        }).then(() => {
+          // Reset state and reload the page
+          setErrorMessage('');
+          setMessage('');
+          setKodeArsip('');
+          setData(null);
+          window.location.reload();
+        });
+      } else {
+        // Use SweetAlert for error
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: `Error: ${error ? error[1] : 'Unknown error'}`,  // Access error[1]
+        }).then(() => {
+          setErrorMessage(error);
+          // Reload the page in case of an error
+          window.location.reload();
+        });
+      }
+    } catch (error) {
+      // Use SweetAlert for API request error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Error during API request',
+      }).then(() => {
+        console.error("API Request Error:", error);
+        // Reload the page in case of an error
+        window.location.reload();
+      });
+    }
+  };
+  
+
+  
 
   return (
     <div className="container">
@@ -66,198 +144,47 @@ const ArsipBalom = () => {
         type="text"
         value={kodeArsip}
         onChange={(e) => setKodeArsip(e.target.value)}
+        onKeyPress={handleKeyPress}
       />
       <button onClick={fetchData} style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-        <i className="fa fa-search" style={{ marginRight: '5px' }}></i>
+        <i className="fa fa-search" style={{ marginRight: '50%' }}></i>
         Cari
       </button>
 
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
       {data && (
-        <div>
-          <h2>Data Ditemukan</h2>
-
-          {/* Form groups with read-only input fields */}
-          <div className="form-group">
-            <label>KODE ARSIP</label>
-            <input type="text" value={data.kode_arsip} readOnly />
-          </div>
-
-          <div className="form-group">
-            <label>JENIS ARSIP:</label>
-            <input type="text" value={data.Jenis_arsip} readOnly />
-          </div>
-
-          <div className="form-group">
-            <label>KLASIFIKASI KEAMANAN:</label>
-            <input type="text" value={data.Klasifikasi_keamanan} readOnly />
-          </div>
-
-          {/* <div className="form-group">
-            <label>Hak Akses:</label>
-            <input type="text" value={data.hak_akses} readOnly />
-          </div> */}
-
-          <div className="form-group">
-            <label>TINGKAT AKSES:</label>
-            <input type="text" value={data.tingkat_akses} readOnly />
-          </div>
-
-          {/* <div className="form-group">
-            <label>Unit Pengolahan:</label>
-            <input type="text" value={data.unit_pengolahan} readOnly />
-          </div> */}
-
-          {/* input for Uraian Informasi */}
-          <div className="form-group">
-            <label htmlFor="Uraian">URAIAN INFORMASI BERKAS/INDEKS</label>
-            <textarea
-              id="Uraian"
-              value={uraianInformasi}
-              onChange={(e) => setUraianInformasi(e.target.value)}
-              required
-              className="form-control"
-              placeholder={'Write Here'}
-            ></textarea>
-          </div>
-         
-          {/* input for Jumlah Folder */}
-          <div className="form-group">
-            <label htmlFor="Uraian">JUMLAH FOLDER</label>
-            <input
-              id="Uraian"
-              type="number"
-              value={jumlahFolder}
-              onChange={(e) => setjumlahFolder(e.target.value)}
-              onKeyPress={(e) => {
-                const isValidInput = /[0-9]/.test(e.key);
-                if (!isValidInput) {
-                  e.preventDefault();
-                }
-              }}
-              required
-              className="form-control"
-              placeholder={'Folder'}
-            />
-          </div>
-                   
-          {/* input for Nomor Isi Berkas */}
-          <div className="form-group">
-            <label htmlFor="Uraian">NOMOR ISI BERKAS</label>
-            <input
-              id="Uraian"
-              type="number"
-              value={nomorIsiBerkas}
-              onChange={(e) => setnomorIsiBerkas(e.target.value)}
-              onKeyPress={(e) => {
-                const isValidInput = /[0-9]/.test(e.key);
-                if (!isValidInput) {
-                  e.preventDefault();
-                }
-              }}
-              required
-              className="form-control"
-              placeholder={'Isi Berkas'}
-            />
-          </div>
-
-           {/* input for Uraian/Isi */}
-           <div className="form-group">
-            <label htmlFor="Uraian">URAIAN/ISI</label>
-            <textarea
-              id="isi"
-              value={Isi}
-              onChange={(e) => setIsi(e.target.value)}
-              required
-              className="form-control"
-              placeholder={'Write Here'}
-            ></textarea>
-          </div>
-
-          {/* input for Kurun Waktu */}
-          <div className="form-group">
-            <label htmlFor="Uraian">KURUN WAKTU</label>
-            <input
-              id="Waktu"
-              type="number"
-              value={Waktu}
-              onChange={(e) => setWaktu(e.target.value)}
-              onKeyPress={(e) => {
-                const isValidInput = /[0-9]/.test(e.key);
-                if (!isValidInput) {
-                  e.preventDefault();
-                }
-              }}
-              required
-              className="form-control"
-              placeholder={'Tahun'}
-            />
-          </div>
-
-          {/* Tingkat Perkembangan */}
-        <div className="form-group">
-          <label htmlFor="Perkembangan">Tingkat Perkembangan</label>
-          <select
-            id="Perkembangan"
-            value={Perkembangan}
-            onChange={(e) => setPerkembangan(e.target.value)}
-            required
-            className="form-control"
-          >
-            <option value="" disabled>
-              Pilih Tingkat Perkembangan
-            </option>
-            <option value="Asli">Asli</option>
-            <option value="Fotocopy">Fotocopy</option>
-            <option value="AsliFotocopy">Asli dan Fotocopy</option>
-          </select>
-        </div>
-
-              {/* input for Jumlah LEMBAR */}
-          <div className="form-group">
-            <label htmlFor="Uraian">JUMLAH LEMBAR</label>
-            <input
-              id="lembar"
-              type="number"
-              value={jumlahLembar}
-              onChange={(e) => setjumlahLembar(e.target.value)}
-              onKeyPress={(e) => {
-                const isValidInput = /[0-9]/.test(e.key);
-                if (!isValidInput) {
-                  e.preventDefault();
-                }
-              }}
-              required
-              className="form-control"
-              placeholder={'Jumlah Lembar'}
-            />
-          </div>
-
-        {/* Lokasi Laci*/}
-        <div className="form-group">
-          <label htmlFor="Lokasi">Lokasi Laci</label>
-          <select
-            id="Lokasi"
-            value={Lokasi}
-            onChange={(e) => setLokasi(e.target.value)}
-            required
-            className="form-control"
-          >
-            <option value="" disabled>
-              Pilih Lokasi Laci
-            </option>
-            <option value="Laci1">Laci 1</option>
-            <option value="Laci2">Laci 2</option>
-            <option value="Laci3">Laci 3</option>
-            <option value="Laci4">Laci 4</option>
-          </select>
-        </div>
-          
-        </div>
+        <FormData
+          data={data}
+          uraian_berkas={uraian_berkas}
+          setUraianBerkas={setUraianBerkas}
+          jumlahFolder={jumlahFolder}
+          setJumlahFolder={setJumlahFolder}
+          nomorIsiBerkas={nomorIsiBerkas}
+          setNomorIsiBerkas={setNomorIsiBerkas}
+          uraian_isi={uraian_isi}
+          setUraianIsi={setUraianIsi}
+          kurun_waktu={kurun_waktu}
+          setKurunWaktu={setKurunWaktu}
+          jumlah_lembar={jumlah_lembar}
+          setJumlahLembar={setJumlahLembar}
+          perkembangan={perkembangan}
+          setPerkembangan={setPerkembangan}
+          lokasi_laci={lokasi_laci}
+          setLokasiLaci={setLokasiLaci}
+          aktif={aktif}
+          setAktif={setAktif}
+          inaktif={inaktif}
+          setInaktif={setInaktif}
+          keterangan={keterangan}
+          setKeterangan={setKeterangan}
+          tanggalDiinput={tanggalDiinput}
+          setTanggalDiinput={setTanggalDiinput}
+          folder={folder}
+          setFolder={setFolder}
+          handleRekap={handleRekap}
+        />
       )}
-
-      {message && <p>{message}</p>}
     </div>
   );
 };
