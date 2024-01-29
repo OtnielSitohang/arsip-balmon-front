@@ -3,7 +3,7 @@ import React from 'react';
 
 class FormData extends React.Component {
   render() {
-    const { data, uraian_berkas, jumlahFolder, nomorIsiBerkas, uraian_isi, kurun_waktu, jumlah_lembar, perkembangan, lokasi_laci, aktif, inaktif, keterangan, tanggalDiinput, folder } = this.props;
+    const { data, uraian_berkas, jumlahFolder, nomorIsiBerkas, uraian_isi, kurun_waktu, jumlah_lembar, perkembangan, lokasi_laci, tanggalDiinput, folder } = this.props;
 
     return (
       <div>
@@ -193,18 +193,23 @@ class FormData extends React.Component {
             placeholder={'Aktif'}
           />
         </div>
-
+{/* 
         <div className="form-group">
           <label htmlFor="Inaktif">INAKTIF</label>
           <input
             id="Inaktif"
             type="text"
-            value={inaktif}
+            value={data.inaktif} readOnly
             onChange={(e) => this.props.setInaktif(e.target.value)}
             required
             className="form-control"
             placeholder={'Inaktif'}
           />
+        </div> */}
+
+        <div className="form-group">
+          <label>INAKTIF</label>
+          <input type="text" value={data.inaktif} readOnly />
         </div>
 
         <div className="form-group">
