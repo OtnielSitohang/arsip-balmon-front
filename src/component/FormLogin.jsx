@@ -1,51 +1,53 @@
-
 import React, { useState } from "react";
 
-const FormLogin = ({ handleLogin }) => {
-  const [user, setUser] = useState({ username: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(null);
+const FormLogin = ({ handleLogin, handleKeyPress }) => {
+  const [userData, setUserData] = useState({ username: "", password: "" });
 
-  const handleChange = (name, value) => {
-    setUser({ ...user, [name]: value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    if (user.username === "" || user.password === "") {
-      setError("Username dan Password Tidak Boleh Kosong!");
-      return;
-    }
-
-    // Pass the user data to the parent component for handling the login
-    handleLogin(user);
-  };
-
-  const handleTogglePassword = () => {
-    setShowPassword(!showPassword);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin(userData);
   };
 
   return (
-    <div>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <input
-        placeholder="Username"
-        onChange={(e) => handleChange("username", e.target.value)}
-      />
-      <input
-        placeholder="Password"
-        type={showPassword ? "text" : "password"}
-        onChange={(e) => handleChange("password", e.target.value)}
-      />
-      <label>
-        Show Password
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="username" className="form-label">
+          Username
+        </label>
         <input
-          type="checkbox"
-          checked={showPassword}
-          onChange={handleTogglePassword}
+          type="text"
+          className="form-control"
+          id="username"
+          name="username"
+          value={userData.username}
+          onChange={handleChange}
+          required
         />
-      </label>
-      <button onClick={handleSubmit}>Login</button>
-    </div>
+      </div>
+      <div className="mb-3">
+        <label htmlFor="password" className="form-label">
+          Password
+        </label>
+        <input
+          type="password"
+          className="form-control"
+          id="password"
+          name="password"
+          value={userData.password}
+          onChange={handleChange}
+          required
+          onKeyPress={handleKeyPress}
+        />
+      </div>
+      <button type="submit" className="btn btn-primary">
+        Login
+      </button>
+    </form>
   );
 };
 

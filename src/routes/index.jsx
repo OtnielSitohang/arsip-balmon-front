@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import LoginPages from "../pages/LoginPages";
-import ArsipBalom from "../pages/ArsipBalom";
+import ArsipBalom from "../Pages/ArsipBalom";
 
 // membuat router
 const router = createBrowserRouter([

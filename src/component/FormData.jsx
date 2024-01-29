@@ -181,21 +181,6 @@ class FormData extends React.Component {
           />
         </div>
 
-
-
-        {/* <div className="form-group">
-          <label htmlFor="keterangan">KETERANGAN</label>
-          <input
-            id="Keterangan"
-            type="text"
-            value={keterangan}
-            onChange={(e) => this.props.setFolder(e.target.value)}
-            required
-            className="form-control"
-            placeholder={'Keterangan'}
-          />
-        </div> */}
-
         <div className="form-group">
           <label htmlFor="Aktif">AKTIF</label>
           <input

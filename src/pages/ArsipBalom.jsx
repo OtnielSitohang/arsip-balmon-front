@@ -1,3 +1,4 @@
+// ArsipBalom.jsx
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import Api from '../API/InserAPI';
@@ -22,6 +23,11 @@ const ArsipBalom = () => {
   const [folder, setFolder] = useState('');
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showInsertForm, setShowInsertForm] = useState(false);
+
+  const toggleInsertForm = () => {
+    setShowInsertForm(!showInsertForm);
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -138,7 +144,6 @@ const ArsipBalom = () => {
   return (
     <div className="container">
       <h1>Data Arsip</h1>
-
       <input
         type="text"
         value={kodeArsip}
@@ -153,36 +158,45 @@ const ArsipBalom = () => {
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
       {data && (
-        <FormData
-          data={data}
-          uraian_berkas={uraian_berkas}
-          setUraianBerkas={setUraianBerkas}
-          jumlahFolder={jumlahFolder}
-          setJumlahFolder={setJumlahFolder}
-          nomorIsiBerkas={nomorIsiBerkas}
-          setNomorIsiBerkas={setNomorIsiBerkas}
-          uraian_isi={uraian_isi}
-          setUraianIsi={setUraianIsi}
-          kurun_waktu={kurun_waktu}
-          setKurunWaktu={setKurunWaktu}
-          jumlah_lembar={jumlah_lembar}
-          setJumlahLembar={setJumlahLembar}
-          perkembangan={perkembangan}
-          setPerkembangan={setPerkembangan}
-          lokasi_laci={lokasi_laci}
-          setLokasiLaci={setLokasiLaci}
-          aktif={aktif}
-          setAktif={setAktif}
-          inaktif={inaktif}
-          setInaktif={setInaktif}
-          keterangan={keterangan}
-          setKeterangan={setKeterangan}
-          tanggalDiinput={tanggalDiinput}
-          setTanggalDiinput={setTanggalDiinput}
-          folder={folder}
-          setFolder={setFolder}
-          handleRekap={handleRekap}
-        />
+        <div>
+          <button onClick={toggleInsertForm}>
+            {showInsertForm ? 'Hide Insert Form' : 'Insert Data'}
+          </button>
+
+          {showInsertForm && (
+            <FormData
+              data={data}
+              uraian_berkas={uraian_berkas}
+              setUraianBerkas={setUraianBerkas}
+              jumlahFolder={jumlahFolder}
+              setJumlahFolder={setJumlahFolder}
+              nomorIsiBerkas={nomorIsiBerkas}
+              setNomorIsiBerkas={setNomorIsiBerkas}
+              uraian_isi={uraian_isi}
+              setUraianIsi={setUraianIsi}
+              kurun_waktu={kurun_waktu}
+              setKurunWaktu={setKurunWaktu}
+              jumlah_lembar={jumlah_lembar}
+              setJumlahLembar={setJumlahLembar}
+              perkembangan={perkembangan}
+              setPerkembangan={setPerkembangan}
+              lokasi_laci={lokasi_laci}
+              setLokasiLaci={setLokasiLaci}
+              aktif={aktif}
+              setAktif={setAktif}
+              inaktif={inaktif}
+              setInaktif={setInaktif}
+              keterangan={keterangan}
+              setKeterangan={setKeterangan}
+              tanggalDiinput={tanggalDiinput}
+              setTanggalDiinput={setTanggalDiinput}
+              folder={folder}
+              setFolder={setFolder}
+              handleRekap={handleRekap}
+              showInsertForm={showInsertForm}
+            />
+          )}
+        </div>
       )}
     </div>
   );

@@ -1,10 +1,15 @@
-// LoginPage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import FormLogin from "../component/FormLogin";
-import { toast } from "sonner";
+import Swal from 'sweetalert2';
 import config from "../config";
+
+const handleKeyPress = (e, handleLogin, userData) => {
+  if (e.key === 'Enter') {
+    handleLogin(userData);
+  }
+};
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -26,13 +31,31 @@ const LoginPage = () => {
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(data.user));
         setLoggedIn(true);
-        navigate("/Input");
+        navigate("/Input"); 
+        Swal.fire({
+          title: 'Login Successful!',
+          text: 'You have successfully logged in.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
       } else {
         setError(data.message || 'Login failed');
+        Swal.fire({
+          title: 'Login Failed!',
+          text: data.message || 'Login failed',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
       }
     } catch (error) {
       console.error('Error during login:', error);
       setError('Error during login. Please try again.');
+      Swal.fire({
+        title: 'Error!',
+        text: 'Error during login. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
@@ -66,7 +89,7 @@ const LoginPage = () => {
             To ensure your identity, please fill out the following form:
           </p>
           <hr className="featurette-divider" />
-          <FormLogin handleLogin={handleLogin} />
+          <FormLogin handleLogin={handleLogin} handleKeyPress={(e) => handleKeyPress(e, handleLogin, userData)} />
           {error && <p style={{ color: "red" }}>{error}</p>}
         </>
       )}
