@@ -3,7 +3,7 @@ import React from 'react';
 
 class FormData extends React.Component {
   render() {
-    const { data, uraian_berkas, jumlahFolder, nomorIsiBerkas, uraian_isi, kurun_waktu, jumlah_lembar, perkembangan, lokasi_laci, tanggalDiinput, folder } = this.props;
+    const { data, uraian_berkas, jumlahFolder, nomorIsiBerkas, uraian_isi, kurun_waktu, jumlah_lembar, perkembangan, lokasi_laci, folder } = this.props;
 
     return (
       <div>
@@ -182,47 +182,16 @@ class FormData extends React.Component {
         </div>
 
         <div className="form-group">
-          <label htmlFor="Aktif">AKTIF</label>
-          <input
-            id="Aktif"
-            type="text"
-            value={aktif}
-            onChange={(e) => this.props.setAktif(e.target.value)}
-            required
-            className="form-control"
-            placeholder={'Aktif'}
-          />
+          <label>AKTIF</label>
+          <input type="text" value={data.aktif} readOnly />
         </div>
-{/* 
-        <div className="form-group">
-          <label htmlFor="Inaktif">INAKTIF</label>
-          <input
-            id="Inaktif"
-            type="text"
-            value={data.inaktif} readOnly
-            onChange={(e) => this.props.setInaktif(e.target.value)}
-            required
-            className="form-control"
-            placeholder={'Inaktif'}
-          />
-        </div> */}
-
         <div className="form-group">
           <label>INAKTIF</label>
           <input type="text" value={data.inaktif} readOnly />
         </div>
-
         <div className="form-group">
-          <label htmlFor="Keterangan">KETERANGAN</label>
-          <input
-            id="Keterangan"
-            type="text"
-            value={keterangan}
-            onChange={(e) => this.props.setKeterangan(e.target.value)}
-            required
-            className="form-control"
-            placeholder={'Keterangan'}
-          />
+          <label>KETERANGAN</label>
+          <input type="text" value={data.keterangan} readOnly />
         </div>
 
         <div className="form-group">
@@ -233,9 +202,7 @@ class FormData extends React.Component {
         <div className="form-group">
           <label>TINGKAT AKSES:</label>
           <input type="text" value={data.tingkat_akses} readOnly />
-        </div>
-
-        
+        </div>       
 
         <button
           onClick={this.props.handleRekap}

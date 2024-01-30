@@ -30,30 +30,39 @@ const ArsipBalom = () => {
   };
 
   const fetchData = async () => {
-    const { data, message, error } = await Api.fetchData(kodeArsip);
-
-    if (data) {
-      setData(data);
-      setMessage(message);
-      setErrorMessage('');
-      setKodeArsip(data.kode_arsip || '');
-      setUraianBerkas('');
-      setJumlahFolder('');
-      setNomorIsiBerkas('');
-      setUraianIsi('');
-      setKurunWaktu('');
-      setJumlahLembar(data.jumlah_lembar || '');
-      setPerkembangan(data.tingkat_perkembangan || '');
-      setLokasiLaci(data.lokasi_laci || '');
-      setAktif('');
-      setInaktif('');
-      setKeterangan('');
-      setTanggalDiinput('');
-      setFolder('');
-    } else {
-      setData(null);
-      setMessage(message);
-      setErrorMessage(error);
+    try {
+      const response = await Api.fetchData(kodeArsip);
+      console.log(response); // Log the response to the console to inspect its structure
+      const { data, message, error } = response;
+      if (data) {
+        setData(data);
+        setMessage(message);
+        setErrorMessage('');
+        setKodeArsip(data.kode_arsip || '');
+        setUraianBerkas('');
+        setJumlahFolder('');
+        setNomorIsiBerkas('');
+        setUraianIsi('');
+        setKurunWaktu('');
+        setJumlahLembar(data.jumlah_lembar || '');
+        setPerkembangan(data.tingkat_perkembangan || '');
+        setLokasiLaci(data.lokasi_laci || '');
+        setAktif(data.aktif);
+        setInaktif(data.inaktif);
+        setKeterangan(data.keterangan);
+        setTanggalDiinput('');
+        setFolder('');
+      } else {
+        setData(null);
+        setMessage(message);
+        setErrorMessage(error || 'Data tidak ditemukan.');
+        setAktif('');
+        setInaktif('');
+        setKeterangan('');
+      }
+    } catch (error) {
+      console.error("Error during API request:", error);
+      setErrorMessage('Error during API request');
     }
   };
 
@@ -63,12 +72,15 @@ const ArsipBalom = () => {
     }
 
     const { data } = await Api.fetchData(kodeArsip);
-    const kode_klasifikasi = data?.kode_arsip || '';
-    const klasifikasi_keamanan_fetched = data?.Klasifikasi_keamanan || '';
-    const tingkat_akses_fetched = data?.tingkat_akses || '';
+    console.log('Data from fetchData:', data);
+    // const kode_klasifikasi = data?.kode_arsip || '';
+    // const klasifikasi_keamanan_fetched = data?.Klasifikasi_keamanan || '';
+    // const aktif_fetched = data?.aktif || '';
+    // const inaktif_fetched = data?.inaktif || '';
+    // const keterangan_fetched = data?.keterangan || '';
 
     const arsipData = {
-      kode_klasifikasi,
+      kode_klasifikasi: data?.kode_arsip || '',
       uraian_berkas,
       jumlah_folder: jumlahFolder,
       no_isi_berkas: nomorIsiBerkas,
@@ -78,13 +90,13 @@ const ArsipBalom = () => {
       jumlah_lembar,
       lokasi_laci,
       folder,
-      aktif,
-      inaktif,
-      keterangan,
-      klasifikasi_keamanan: klasifikasi_keamanan_fetched,
-      tingkat_akses: tingkat_akses_fetched,
+      aktif: data?.aktif || '', // Pastikan nilai aktif tersedia
+      inaktif: data?.inaktif || '', // Pastikan nilai inaktif tersedia
+      keterangan: data?.keterangan || '', // Pastikan nilai keterangan tersedia
+      klasifikasi_keamanan: data?.Klasifikasi_keamanan || '',
       tanggal_diinput: new Date().toISOString(),
     };
+    
 
     try {
       const { success, message, error } = await Api.insertData(arsipData);
@@ -123,8 +135,7 @@ const ArsipBalom = () => {
   };
 
   const validateFields = () => {
-    // Add validation logic here, return false if validation fails
-    if (!uraian_berkas || !jumlahFolder || !nomorIsiBerkas || !uraian_isi || !kurun_waktu || !jumlah_lembar || !perkembangan || !lokasi_laci || !aktif || !inaktif || !keterangan || !folder) {
+    if (!uraian_berkas || !jumlahFolder || !nomorIsiBerkas || !uraian_isi || !kurun_waktu || !jumlah_lembar || !perkembangan || !lokasi_laci  || !folder) {
       Swal.fire({
         icon: 'error',
         title: 'Validation Error!',

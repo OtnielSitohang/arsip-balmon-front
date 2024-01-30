@@ -1,4 +1,3 @@
-// api.js
 import axios from 'axios';
 import config from '../config';
 
@@ -8,14 +7,24 @@ class Api {
       const response = await axios.post(`${config.apiUrl}/cariData`, {
         kode_arsip: kode_klasifikasi,
       });
-
+      
+  
       if (response.data.message === 'Data ditemukan') {
         const fetchedData = response.data.data;
-
-        if (fetchedData && fetchedData.length > 0) {
-          const firstData = fetchedData[0];
+  
+        if (fetchedData) {
+          // Check and set default values if needed
+          const aktifValue = fetchedData.aktif || 'Data belum diset';
+          const inaktifValue = fetchedData.inaktif || 'Data belum diset';
+          const keteranganValue = fetchedData.keterangan || 'Data belum diset';
+  
           return {
-            data: firstData,
+            data: {
+              ...fetchedData,
+              aktif: aktifValue,
+              inaktif: inaktifValue,
+              keterangan: keteranganValue,
+            },
             message: 'Data ditemukan.',
           };
         } else {
@@ -41,11 +50,14 @@ class Api {
       };
     }
   }
+  
 
   static async insertData(arsipData) {
     try {
-      const insertResponse = await axios.post(`${config.apiUrl}/insertData`, arsipData);
-  
+      console.log('Request payload:', arsipData);
+
+      const insertResponse = await axios.post(`${config.apiUrl}insertData`, arsipData);
+      console.log(insertResponse);
       if (insertResponse.data.success) {
         return {
           success: true,
@@ -59,13 +71,16 @@ class Api {
       }
     } catch (error) {
       console.error('Error during rekap:', error);
+      console.error('Server responded with:', error.response.data);
+      console.error('Status:', error.response.status);
+      console.error('Headers:', error.response.headers);
+
       return {
         success: false,
         message: 'Gagal melakukan rekap. Silakan coba lagi.',
       };
     }
   }
-  
 }
 
 export default Api;
