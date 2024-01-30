@@ -161,10 +161,10 @@ class FormData extends React.Component {
             <option value="" disabled>
               Pilih Lokasi Laci
             </option>
-            <option value="Laci1">Laci 1</option>
-            <option value="Laci2">Laci 2</option>
-            <option value="Laci3">Laci 3</option>
-            <option value="Laci4">Laci 4</option>
+            <option value="Laci 1">Laci 1</option>
+            <option value="Laci 2">Laci 2</option>
+            <option value="Laci 3">Laci 3</option>
+            <option value="Laci 4">Laci 4</option>
           </select>
         </div>
 

@@ -70,69 +70,78 @@ const ArsipBalom = () => {
     if (!validateFields()) {
       return;
     }
-
-    const { data } = await Api.fetchData(kodeArsip);
-    console.log('Data from fetchData:', data);
-    // const kode_klasifikasi = data?.kode_arsip || '';
-    // const klasifikasi_keamanan_fetched = data?.Klasifikasi_keamanan || '';
-    // const aktif_fetched = data?.aktif || '';
-    // const inaktif_fetched = data?.inaktif || '';
-    // const keterangan_fetched = data?.keterangan || '';
-
-    const arsipData = {
-      kode_klasifikasi: data?.kode_arsip || '',
-      uraian_berkas,
-      jumlah_folder: jumlahFolder,
-      no_isi_berkas: nomorIsiBerkas,
-      uraian_isi,
-      kurun_waktu,
-      tingkat_perkembangan: perkembangan,
-      jumlah_lembar,
-      lokasi_laci,
-      folder,
-      aktif: data?.aktif || '', // Pastikan nilai aktif tersedia
-      inaktif: data?.inaktif || '', // Pastikan nilai inaktif tersedia
-      keterangan: data?.keterangan || '', // Pastikan nilai keterangan tersedia
-      klasifikasi_keamanan: data?.Klasifikasi_keamanan || '',
-      tanggal_diinput: new Date().toISOString(),
-    };
-    
-
+  
     try {
-      const { success, message, error } = await Api.insertData(arsipData);
-
-      if (success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: message || 'Data inserted successfully!',
-        }).then(() => {
-          setErrorMessage('');
-          setMessage('');
-          setKodeArsip('');
-          setData(null);
-          window.location.reload();
-        });
+      const { data } = await Api.fetchData(kodeArsip);
+      console.log('Data from fetchData:', data);
+  
+      const arsipData = {
+        kode_klasifikasi: data?.kode_arsip || '',
+        tingkat_akses: data?.tingkat_akses || '',
+        uraian_berkas,
+        jumlah_folder: jumlahFolder,
+        no_isi_berkas: nomorIsiBerkas,
+        uraian_isi,
+        kurun_waktu,
+        tingkat_perkembangan: perkembangan,
+        jumlah_lembar,
+        lokasi_laci,
+        folder,
+        aktif: data?.aktif || '',
+        inaktif: data?.inaktif || '',
+        keterangan: data?.keterangan || '',
+        klasifikasi_keamanan: data?.Klasifikasi_keamanan || '',
+        tingkat_akses: data?.tingkat_akses || '',
+        tanggal_diinput: new Date().toISOString(),
+      };
+  
+      const response = await Api.insertData(arsipData);
+  
+      if (response) {
+        const { success, message, error } = response;
+  
+        if (success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: message || 'Data inserted successfully!',
+          }).then(() => {
+            setErrorMessage('');
+            setMessage('');
+            setKodeArsip('');
+            setData(null);
+            window.location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: `Error: ${error ? error.message : 'Unknown error'}`,
+          }).then(() => {
+            setErrorMessage(error && error.message ? error.message : 'Unknown error');
+          });
+        }
       } else {
         Swal.fire({
           icon: 'error',
           title: 'Error!',
-          text: `Error: ${error ? error[1] : 'Unknown error'}`,
+          text: 'Unexpected or undefined response',
         }).then(() => {
-          setErrorMessage(error);
+          setErrorMessage('Unexpected or undefined response');
         });
       }
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Error!',
-        text: 'Error during API request',
+        text: error.response ? error.response.data.message : 'Error during API request',
       }).then(() => {
         console.error("API Request Error:", error);
         setErrorMessage('Error during API request');
       });
     }
   };
+  
 
   const validateFields = () => {
     if (!uraian_berkas || !jumlahFolder || !nomorIsiBerkas || !uraian_isi || !kurun_waktu || !jumlah_lembar || !perkembangan || !lokasi_laci  || !folder) {
