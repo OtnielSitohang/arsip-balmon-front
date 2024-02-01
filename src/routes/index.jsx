@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 import LoginPages from "../pages/LoginPages";
 import ArsipBalom from "../Pages/ArsipBalom";
+import DataPage from "../pages/DataPage";
 
 // membuat router
 const router = createBrowserRouter([
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/Input",
         element: <ArsipBalom />,
+      },
+      {
+        path: "/ShowData",
+        element: <DataPage />,
       },
     ],
   },
