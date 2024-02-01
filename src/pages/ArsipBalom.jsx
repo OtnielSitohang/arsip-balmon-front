@@ -157,18 +157,30 @@ const ArsipBalom = () => {
 
   return (
     <div className="container">
-      <h1>Data Arsip</h1>
+    <h1>Data Arsip</h1>
 
-      <input
-        type="text"
-        value={kodeArsip}
-        onChange={(e) => setKodeArsip(e.target.value)}
-        onKeyPress={handleKeyPress}
-      />
-      <button onClick={fetchData} style={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-        <i className="fa fa-search" style={{ marginRight: '50%' }}></i>
-        Cari
-      </button>
+<div style={{ display: 'flex', alignItems: 'center' }}>
+  <input
+    type="text"
+    value={kodeArsip}
+    onChange={(e) => setKodeArsip(e.target.value)}
+    onKeyPress={handleKeyPress}
+    style={{
+      marginRight: '10px',
+      flex: '1',
+      padding: '10px',
+      borderRadius: '8px', // Adjust the border-radius as needed
+    }}
+  />
+  <button onClick={fetchData} style={{ padding: '10px', width: '30%' }}>
+    <i className="fa fa-search" style={{ marginRight: '5px' }}></i> Cari
+  </button>
+</div>
+
+<button style={{ marginLeft: '10px', padding: '10px' }}>
+  Rekap Di Folder Yang sama
+</button>
+
 
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
