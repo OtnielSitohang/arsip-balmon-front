@@ -1,102 +1,101 @@
-// pages/ArsipBalomPage.jsx
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import Api from '../API/InserAPI';
 import '../css/ArsipBalmon.css';
+import FormData from '../component/FormData';
 import DisplayData from '../component/DisplayData';
+import { useNavigate } from 'react-router-dom';
 
-class ArsipBalomPage extends React.Component {
-  constructor(props) {
-    super(props);
+const ArsipBalom = () => {
+  
+  const history = useNavigate();
 
-    this.state = {
-      kodeArsip: '',
-      data: null,
-      uraian_berkas: '',
-      jumlahFolder: '',
-      nomorIsiBerkas: '',
-      uraian_isi: '',
-      kurun_waktu: '',
-      jumlah_lembar: '',
-      perkembangan: '',
-      lokasi_laci: '',
-      aktif: '',
-      inaktif: '',
-      keterangan: '',
-      tanggalDiinput: '',
-      folder: '',
-      message: '',
-      errorMessage: '',
-    };
-  }
+  const handleShowData = () => {
+    history('/ShowData');
+  };
 
-  handleKeyPress = (e) => {
+  const [kodeArsip, setKodeArsip] = useState('');
+  const [data, setData] = useState(null);
+  const [uraian_berkas, setUraianBerkas] = useState('');
+  const [jumlahFolder, setJumlahFolder] = useState('');
+  const [nomorIsiBerkas, setNomorIsiBerkas] = useState('');
+  const [uraian_isi, setUraianIsi] = useState('');
+  const [kurun_waktu, setKurunWaktu] = useState('');
+  const [jumlah_lembar, setJumlahLembar] = useState('');
+  const [perkembangan, setPerkembangan] = useState('');
+  const [lokasi_laci, setLokasiLaci] = useState('');
+  const [aktif, setAktif] = useState('');
+  const [inaktif, setInaktif] = useState('');
+  const [keterangan, setKeterangan] = useState('');
+  const [tanggalDiinput, setTanggalDiinput] = useState('');
+  const [folder, setFolder] = useState('');
+  const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.fetchData();
+      fetchData();
     }
   };
 
-  fetchData = async () => {
+  const fetchData = async () => {
     try {
-      const response = await Api.fetchData(this.state.kodeArsip);
+      const response = await Api.fetchData(kodeArsip);
+      console.log(response); // Log the response to the console to inspect its structure
       const { data, message, error } = response;
       if (data) {
-        this.setState({
-          data,
-          message,
-          errorMessage: '',
-          kodeArsip: data.kode_arsip || '',
-          uraian_berkas: '',
-          jumlahFolder: '',
-          nomorIsiBerkas: '',
-          uraian_isi: '',
-          kurun_waktu: '',
-          jumlah_lembar: data.jumlah_lembar || '',
-          perkembangan: data.tingkat_perkembangan || '',
-          lokasi_laci: data.lokasi_laci || '',
-          aktif: data.aktif,
-          inaktif: data.inaktif,
-          keterangan: data.keterangan,
-          tanggalDiinput: '',
-          folder: '',
-        });
+        setData(data);
+        setMessage(message);
+        setErrorMessage('');
+        setKodeArsip(data.kode_arsip || '');
+        setUraianBerkas('');
+        setJumlahFolder('');
+        setNomorIsiBerkas('');
+        setUraianIsi('');
+        setKurunWaktu('');
+        setJumlahLembar(data.jumlah_lembar || '');
+        setPerkembangan(data.tingkat_perkembangan || '');
+        setLokasiLaci(data.lokasi_laci || '');
+        setAktif(data.aktif);
+        setInaktif(data.inaktif);
+        setKeterangan(data.keterangan);
+        setTanggalDiinput('');
+        setFolder('');
       } else {
-        this.setState({
-          data: null,
-          message,
-          errorMessage: error || 'Data tidak ditemukan.',
-          aktif: '',
-          inaktif: '',
-          keterangan: '',
-        });
+        setData(null);
+        setMessage(message);
+        setErrorMessage(error || 'Data tidak ditemukan.');
+        setAktif('');
+        setInaktif('');
+        setKeterangan('');
       }
     } catch (error) {
       console.error("Error during API request:", error);
-      this.setState({ errorMessage: 'Error during API request' });
+      setErrorMessage('Error during API request');
     }
   };
 
-  handleRekap = async () => {
-    if (!this.validateFields()) {
+  const handleRekap = async () => {
+    if (!validateFields()) {
       return;
     }
-
+  
     try {
-      const { data } = await Api.fetchData(this.state.kodeArsip);
+      const { data } = await Api.fetchData(kodeArsip);
       console.log('Data from fetchData:', data);
-
+  
       const arsipData = {
         kode_klasifikasi: data?.kode_arsip || '',
         tingkat_akses: data?.tingkat_akses || '',
-        uraian_berkas: this.state.uraian_berkas,
-        jumlah_folder: this.state.jumlahFolder,
-        no_isi_berkas: this.state.nomorIsiBerkas,
-        uraian_isi: this.state.uraian_isi,
-        kurun_waktu: this.state.kurun_waktu,
-        tingkat_perkembangan: this.state.perkembangan,
-        jumlah_lembar: this.state.jumlah_lembar,
-        lokasi_laci: this.state.lokasi_laci,
-        folder: this.state.folder,
+        uraian_berkas,
+        jumlah_folder: jumlahFolder,
+        no_isi_berkas: nomorIsiBerkas,
+        uraian_isi,
+        kurun_waktu,
+        tingkat_perkembangan: perkembangan,
+        jumlah_lembar,
+        lokasi_laci,
+        folder,
         aktif: data?.aktif || '',
         inaktif: data?.inaktif || '',
         keterangan: data?.keterangan || '',
@@ -104,24 +103,22 @@ class ArsipBalomPage extends React.Component {
         tingkat_akses: data?.tingkat_akses || '',
         tanggal_diinput: new Date().toISOString(),
       };
-
+  
       const response = await Api.insertData(arsipData);
-
+  
       if (response) {
         const { success, message, error } = response;
-
+  
         if (success) {
           Swal.fire({
             icon: 'success',
             title: 'Success!',
             text: message || 'Data inserted successfully!',
           }).then(() => {
-            this.setState({
-              errorMessage: '',
-              message: '',
-              kodeArsip: '',
-              data: null,
-            });
+            setErrorMessage('');
+            setMessage('');
+            setKodeArsip('');
+            setData(null);
             window.location.reload();
           });
         } else {
@@ -130,7 +127,7 @@ class ArsipBalomPage extends React.Component {
             title: 'Error!',
             text: `Error: ${error ? error.message : 'Unknown error'}`,
           }).then(() => {
-            this.setState({ errorMessage: error && error.message ? error.message : 'Unknown error' });
+            setErrorMessage(error && error.message ? error.message : 'Unknown error');
           });
         }
       } else {
@@ -139,7 +136,7 @@ class ArsipBalomPage extends React.Component {
           title: 'Error!',
           text: 'Unexpected or undefined response',
         }).then(() => {
-          this.setState({ errorMessage: 'Unexpected or undefined response' });
+          setErrorMessage('Unexpected or undefined response');
         });
       }
     } catch (error) {
@@ -149,15 +146,14 @@ class ArsipBalomPage extends React.Component {
         text: error.response ? error.response.data.message : 'Error during API request',
       }).then(() => {
         console.error("API Request Error:", error);
-        this.setState({ errorMessage: 'Error during API request' });
+        setErrorMessage('Error during API request');
       });
     }
   };
+  
 
-  validateFields = () => {
-    if (!this.state.uraian_berkas || !this.state.jumlahFolder || !this.state.nomorIsiBerkas ||
-      !this.state.uraian_isi || !this.state.kurun_waktu || !this.state.jumlah_lembar ||
-      !this.state.perkembangan || !this.state.lokasi_laci || !this.state.folder) {
+  const validateFields = () => {
+    if (!uraian_berkas || !jumlahFolder || !nomorIsiBerkas || !uraian_isi || !kurun_waktu || !jumlah_lembar || !perkembangan || !lokasi_laci  || !folder) {
       Swal.fire({
         icon: 'error',
         title: 'Validation Error!',
@@ -168,73 +164,72 @@ class ArsipBalomPage extends React.Component {
     return true;
   };
 
-  render() {
-    return (
-      <div className="container">
-        <h1>Data Arsip</h1>
+  return (
+    <div className="container">
+    <h1>Data Arsip</h1>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <input
-            type="text"
-            value={this.state.kodeArsip}
-            onChange={(e) => this.setState({ kodeArsip: e.target.value })}
-            onKeyPress={this.handleKeyPress}
-            style={{
-              marginRight: '10px',
-              flex: '1',
-              padding: '10px',
-              borderRadius: '8px',
-            }}
-          />
-          <button onClick={this.fetchData} style={{ padding: '10px', width: '30%' }}>
-            <i className="fa fa-search" style={{ marginRight: '5px' }}></i> Cari
-          </button>
-        </div>
+<div style={{ display: 'flex', alignItems: 'center' }}>
+  <input
+    type="text"
+    value={kodeArsip}
+    onChange={(e) => setKodeArsip(e.target.value)}
+    onKeyPress={handleKeyPress}
+    style={{
+      marginRight: '10px',
+      flex: '1',
+      padding: '10px',
+      borderRadius: '8px', // Adjust the border-radius as needed
+    }}
+  />
+  <button onClick={fetchData} style={{ padding: '10px', width: '30%' }}>
+    <i className="fa fa-search" style={{ marginRight: '5px' }}></i> Cari
+  </button>
+</div>
 
-        <button
+<button
         style={{ marginLeft: '10px', padding: '10px' }}
-        onClick={() => history.push('/ShowData')}  // Use history.push to navigate
+        onClick={handleShowData}
       >
         Show All Data
       </button>
 
-        {this.state.errorMessage && <p style={{ color: 'red' }}>{this.state.errorMessage}</p>}
 
-        {this.state.data && (
-          <DisplayData
-            data={this.state.data}
-            uraian_berkas={this.state.uraian_berkas}
-            setUraianBerkas={(value) => this.setState({ uraian_berkas: value })}
-            jumlahFolder={this.state.jumlahFolder}
-            setJumlahFolder={(value) => this.setState({ jumlahFolder: value })}
-            nomorIsiBerkas={this.state.nomorIsiBerkas}
-            setNomorIsiBerkas={(value) => this.setState({ nomorIsiBerkas: value })}
-            uraian_isi={this.state.uraian_isi}
-            setUraianIsi={(value) => this.setState({ uraian_isi: value })}
-            kurun_waktu={this.state.kurun_waktu}
-            setKurunWaktu={(value) => this.setState({ kurun_waktu: value })}
-            jumlah_lembar={this.state.jumlah_lembar}
-            setJumlahLembar={(value) => this.setState({ jumlah_lembar: value })}
-            perkembangan={this.state.perkembangan}
-            setPerkembangan={(value) => this.setState({ perkembangan: value })}
-            lokasi_laci={this.state.lokasi_laci}
-            setLokasiLaci={(value) => this.setState({ lokasi_laci: value })}
-            aktif={this.state.aktif}
-            setAktif={(value) => this.setState({ aktif: value })}
-            inaktif={this.state.inaktif}
-            setInaktif={(value) => this.setState({ inaktif: value })}
-            keterangan={this.state.keterangan}
-            setKeterangan={(value) => this.setState({ keterangan: value })}
-            tanggalDiinput={this.state.tanggalDiinput}
-            setTanggalDiinput={(value) => this.setState({ tanggalDiinput: value })}
-            folder={this.state.folder}
-            setFolder={(value) => this.setState({ folder: value })}
-            handleRekap={this.handleRekap}
-          />
-        )}
-      </div>
-    );
-  }
-}
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-export default ArsipBalomPage;
+      {data && (
+        <FormData
+          data={data}
+          uraian_berkas={uraian_berkas}
+          setUraianBerkas={setUraianBerkas}
+          jumlahFolder={jumlahFolder}
+          setJumlahFolder={setJumlahFolder}
+          nomorIsiBerkas={nomorIsiBerkas}
+          setNomorIsiBerkas={setNomorIsiBerkas}
+          uraian_isi={uraian_isi}
+          setUraianIsi={setUraianIsi}
+          kurun_waktu={kurun_waktu}
+          setKurunWaktu={setKurunWaktu}
+          jumlah_lembar={jumlah_lembar}
+          setJumlahLembar={setJumlahLembar}
+          perkembangan={perkembangan}
+          setPerkembangan={setPerkembangan}
+          lokasi_laci={lokasi_laci}
+          setLokasiLaci={setLokasiLaci}
+          aktif={aktif}
+          setAktif={setAktif}
+          inaktif={inaktif}
+          setInaktif={setInaktif}
+          keterangan={keterangan}
+          setKeterangan={setKeterangan}
+          tanggalDiinput={tanggalDiinput}
+          setTanggalDiinput={setTanggalDiinput}
+          folder={folder}
+          setFolder={setFolder}
+          handleRekap={handleRekap}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ArsipBalom;

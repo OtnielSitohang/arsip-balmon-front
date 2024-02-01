@@ -1,34 +1,81 @@
-// components/DisplayData.jsx
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const DisplayData = ({ data }) => {
+  if (!Array.isArray(data)) {
+    return <p>Data is not in the expected format</p>;
+  }
+
+
+  const formatDate = (inputDate) => {
+    const options = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    };
+
+    const date = new Date(inputDate);
+    return date.toLocaleDateString('en-US', options);
+  };
+
+
   return (
-    <div>
-      <h2>Data Fetched:</h2>
-      <ul>
-        {data.map((item, index) => (
-          <li key={index}>
-            <strong>Urutan Input:</strong> {item.urutan_input} <br />
-            <strong>Kode Klasifikasi:</strong> {item.kode_klasifikasi} <br />
-            <strong>Uraian Berkas:</strong> {item.uraian_berkas} <br />
-            <strong>Jumlah Folder:</strong> {item.jumlah_folder} <br />
-            <strong>No. Isi Berkas:</strong> {item.no_isi_berkas} <br />
-            <strong>Uraian Isi:</strong> {item.uraian_isi} <br />
-            <strong>Kurun Waktu:</strong> {item.kurun_waktu} <br />
-            <strong>Tingkat Perkembangan:</strong> {item.tingkat_perkembangan} <br />
-            <strong>Jumlah Lembar:</strong> {item.jumlah_lembar} <br />
-            <strong>Lokasi Laci:</strong> {item.lokasi_laci} <br />
-            <strong>Folder:</strong> {item.folder} <br />
-            <strong>Aktif:</strong> {item.aktif} <br />
-            <strong>Inaktif:</strong> {item.inaktif} <br />
-            <strong>Keterangan:</strong> {item.keterangan} <br />
-            <strong>Klasifikasi Keamanan:</strong> {item.klasifikasi_keamanan} <br />
-            <strong>Tingkat Akses:</strong> {item.tingkat_akses} <br />
-            <strong>Tanggal Diinput:</strong> {item.tanggal_diinput} <br />
-            <hr />
-          </li>
-        ))}
-      </ul>
+    <div className="table-container">
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Urutan Input</th>
+            <th>Kode Klasifikasi</th>
+            <th>Uraian Berkas</th>
+            <th>Jumlah Folder</th>
+            <th>No. Isi Berkas</th>
+            <th>Uraian Isi</th>
+            <th>Kurun Waktu</th>
+            <th>Tingkat Perkembangan</th>
+            <th>Jumlah Lembar</th>
+            <th>Lokasi Laci</th>
+            <th>Folder</th>
+            <th>Aktif</th>
+            <th>Inaktif</th>
+            <th>Keterangan</th>
+            <th>Klasifikasi Keamanan</th>
+            <th>Tingkat Akses</th>
+            <th>Tanggal Diinput</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, index) => (
+            <tr key={index}>
+              <td>{item.urutan_input}</td>
+              <td>{item.kode_klasifikasi}</td>
+              <td>{item.uraian_berkas}</td>
+              <td>{item.jumlah_folder}</td>
+              <td>{item.no_isi_berkas}</td>
+              <td>{item.uraian_isi}</td>
+              <td>{item.kurun_waktu}</td>
+              <td>{item.tingkat_perkembangan}</td>
+              <td>{item.jumlah_lembar}</td>
+              <td>{item.lokasi_laci}</td>
+              <td>{item.folder}</td>
+              <td>{item.aktif}</td>
+              <td>{item.inaktif}</td>
+              <td>{item.keterangan}</td>
+              <td>{item.klasifikasi_keamanan}</td>
+              <td>{item.tingkat_akses}</td>
+              <td>{formatDate(item.tanggal_diinput)}</td>
+              <button>
+                  <FontAwesomeIcon icon={faPlus} /> Tambah
+                </button>
+                <button>
+                  <FontAwesomeIcon icon={faEdit} /> Edit
+                </button>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

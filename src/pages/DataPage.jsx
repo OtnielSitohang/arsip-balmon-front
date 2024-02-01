@@ -1,17 +1,28 @@
-// pages/DataPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';  // Import Link from react-router-dom
 import DisplayData from '../component/DisplayData';
-import config from '../config';  // Make sure to import your config file
+import config from '../config';  
+import '../css/DataPage.css';
+
 
 const DataPage = () => {
   const [data, setData] = useState([]);
-  const history = useHistory();
+  const history = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${config.apiUrl}ShowAllData`);
+        const response = await fetch(`${config.apiUrl}ShowAllData`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
         const result = await response.json();
         setData(result.data);
       } catch (error) {
@@ -28,15 +39,13 @@ const DataPage = () => {
 
   return (
     <div>
-      <h1>Data Page</h1>
+      <h1>Rekap Data</h1>
       <DisplayData data={data} />
 
-      <button
-        style={{ marginLeft: '10px', padding: '10px' }}
-        onClick={navigateToShowData}
-      >
-        Rekap Di Folder Yang Sama
-      </button>
+      {/* Use the Link component to navigate to "/Input" */}
+      <Link to="/Input">
+        <button style={{ marginLeft: '10px', padding: '10px' }}>Back to ArsipBalmon</button>
+      </Link>
     </div>
   );
 };
