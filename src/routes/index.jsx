@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import LoginPages from "../pages/LoginPages";
 import ArsipBalom from "../Pages/ArsipBalom";
 import DataPage from "../pages/DataPage";
+import EditPage from "../component/EditPage";
 
 // membuat router
 const router = createBrowserRouter([
@@ -11,18 +12,22 @@ const router = createBrowserRouter([
     element: <div>Routes Not Found!</div>,
   },
   {
+    path: "/Input",
+    element: <ArsipBalom />,
+  },
+  {
     children: [
       {
         path: "/",
         element: <LoginPages />,
       },
       {
-        path: "/Input",
-        element: <ArsipBalom />,
-      },
-      {
         path: "/ShowData",
         element: <DataPage />,
+      },
+      {
+        path: "/EditPage",
+        element: <EditPage />,
       },
     ],
   },

@@ -1,0 +1,125 @@
+/* appBar.css */
+
+.app-bar-container {
+  background-color: green;
+  height: 75px;
+  color: var(--gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  transition: height 0.4s;
+}
+
+.app-bar-container-NX {
+  height: 55px;
+}
+
+.app-bar-upper {
+  display: flex;
+  align-items: center;
+}
+
+.app-bar-heading {
+  display: flex;
+  align-items: center;
+}
+
+.app-bar-brand img {
+  width: 70px;
+  padding: 0 10px;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.hamburger span {
+  display: block;
+  margin-top: 8px;
+  background-color: var(--light);
+  border-radius: 15px;
+  height: 5px;
+  width: 35px;
+  transition: 0.4s;
+}
+
+.hamburger-in:hover span:nth-child(1) {
+  width: 25px;
+  transform: translateY(4px) rotate(-25deg);
+}
+
+.hamburger-in:hover span:nth-child(2) {
+  width: 40px;
+}
+
+.hamburger-in:hover span:nth-child(3) {
+  width: 25px;
+  transform: translateY(-4px) rotate(25deg);
+}
+
+.hamburger-out {
+  margin-left: 19px;
+}
+
+.hamburger-out span:nth-child(1),
+.hamburger-out span:nth-child(2),
+.hamburger-out span:nth-child(3) {
+  background-color: white; /* Set the color for the hamburger icon */
+}
+
+.app-bar-menu {
+  display: flex;
+  margin-left: 20px;
+}
+
+.app-bar-menu a {
+  color: white;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+.app-bar-footer {
+  display: flex;
+  align-items: center;
+}
+
+.app-bar-details img {
+  width: 30px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.app-bar-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.app-bar-user-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.app-bar-user-position {
+  margin: 0;
+  font-size: 12px;
+  color: var(--gray);
+}
+
+.logout-icon {
+  background-color: var(--light);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.logout-icon:hover {
+  background-color: var(--primary);
+}

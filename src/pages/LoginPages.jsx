@@ -62,6 +62,7 @@ const LoginPage = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setLoggedIn(false);
+    navigate("/", { replace: true }); // Redirect to the login page and replace the current history entry
   };
 
   useEffect(() => {

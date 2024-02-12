@@ -5,32 +5,29 @@ import '../css/ArsipBalmon.css';
 import FormData from '../component/FormData';
 import DisplayData from '../component/DisplayData';
 import { useNavigate } from 'react-router-dom';
+import SidebarComponent from "../component/sideBar/sidebar";
 
 const ArsipBalom = () => {
-  
   const history = useNavigate();
+
+  const [kodeKlasifikasi, setKodeKlasifikasi] = useState('');
+  const [data, setData] = useState(null);
+  const [uraian_informasi, seturaian_informasi] = useState('');
+  const [uraian_isi, seturaian_isi] = useState('');
+  const [kurun_waktu, setkurun_waktu] = useState('');
+  const [jumlah_lembar, setjumlah_lembar] = useState('');
+  const [lokasi, setLokasi] = useState('');
+  const [aktif, setAktif] = useState('');
+  const [inaktif, setInaktif] = useState('');
+  const [keterangan, setKeterangan] = useState('');
+  const [folder, setFolder] = useState('');
+  const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [tingkatPerkembangan, setTingkatPerkembangan] = useState('');
 
   const handleShowData = () => {
     history('/ShowData');
   };
-
-  const [kodeArsip, setKodeArsip] = useState('');
-  const [data, setData] = useState(null);
-  const [uraian_berkas, setUraianBerkas] = useState('');
-  const [jumlahFolder, setJumlahFolder] = useState('');
-  const [nomorIsiBerkas, setNomorIsiBerkas] = useState('');
-  const [uraian_isi, setUraianIsi] = useState('');
-  const [kurun_waktu, setKurunWaktu] = useState('');
-  const [jumlah_lembar, setJumlahLembar] = useState('');
-  const [perkembangan, setPerkembangan] = useState('');
-  const [lokasi_laci, setLokasiLaci] = useState('');
-  const [aktif, setAktif] = useState('');
-  const [inaktif, setInaktif] = useState('');
-  const [keterangan, setKeterangan] = useState('');
-  const [tanggalDiinput, setTanggalDiinput] = useState('');
-  const [folder, setFolder] = useState('');
-  const [message, setMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -40,26 +37,22 @@ const ArsipBalom = () => {
 
   const fetchData = async () => {
     try {
-      const response = await Api.fetchData(kodeArsip);
+      const response = await Api.fetchData(kodeKlasifikasi);
       console.log(response); // Log the response to the console to inspect its structure
       const { data, message, error } = response;
       if (data) {
         setData(data);
         setMessage(message);
         setErrorMessage('');
-        setKodeArsip(data.kode_arsip || '');
-        setUraianBerkas('');
-        setJumlahFolder('');
-        setNomorIsiBerkas('');
-        setUraianIsi('');
-        setKurunWaktu('');
-        setJumlahLembar(data.jumlah_lembar || '');
-        setPerkembangan(data.tingkat_perkembangan || '');
-        setLokasiLaci(data.lokasi_laci || '');
+        setKodeKlasifikasi(data.kode_klasifikasi || '');
+        seturaian_informasi('');
+        seturaian_isi('');
+        setkurun_waktu(data.kurun_waktu || '');
+        setjumlah_lembar(data.jumlah_lembar || '');
+        setLokasi(data.lokasi || '');
         setAktif(data.aktif);
         setInaktif(data.inaktif);
         setKeterangan(data.keterangan);
-        setTanggalDiinput('');
         setFolder('');
       } else {
         setData(null);
@@ -81,27 +74,19 @@ const ArsipBalom = () => {
     }
   
     try {
-      const { data } = await Api.fetchData(kodeArsip);
-      console.log('Data from fetchData:', data);
-  
       const arsipData = {
         kode_klasifikasi: data?.kode_arsip || '',
-        tingkat_akses: data?.tingkat_akses || '',
-        uraian_berkas,
-        jumlah_folder: jumlahFolder,
-        no_isi_berkas: nomorIsiBerkas,
-        uraian_isi,
-        kurun_waktu,
-        tingkat_perkembangan: perkembangan,
-        jumlah_lembar,
-        lokasi_laci,
-        folder,
-        aktif: data?.aktif || '',
-        inaktif: data?.inaktif || '',
-        keterangan: data?.keterangan || '',
+        kurun_waktu: kurun_waktu,
+        aktif: aktif,
+        inaktif: inaktif,
+        keterangan: keterangan,
         klasifikasi_keamanan: data?.Klasifikasi_keamanan || '',
-        tingkat_akses: data?.tingkat_akses || '',
-        tanggal_diinput: new Date().toISOString(),
+        tingkat_akses: data.tingkat_akses,
+        uraian_informasi: uraian_informasi,
+        uraian_isi: uraian_isi,
+        tingkat_perkembangan: tingkatPerkembangan,
+        jumlah_lembar: jumlah_lembar,
+        lokasi: lokasi
       };
   
       const response = await Api.insertData(arsipData);
@@ -117,7 +102,7 @@ const ArsipBalom = () => {
           }).then(() => {
             setErrorMessage('');
             setMessage('');
-            setKodeArsip('');
+            setKodeKlasifikasi('');
             setData(null);
             window.location.reload();
           });
@@ -153,7 +138,7 @@ const ArsipBalom = () => {
   
 
   const validateFields = () => {
-    if (!uraian_berkas || !jumlahFolder || !nomorIsiBerkas || !uraian_isi || !kurun_waktu || !jumlah_lembar || !perkembangan || !lokasi_laci  || !folder) {
+    if (!uraian_informasi || !uraian_isi || !kurun_waktu || !jumlah_lembar || !lokasi || !aktif || !inaktif || !keterangan || !folder) {
       Swal.fire({
         icon: 'error',
         title: 'Validation Error!',
@@ -166,27 +151,28 @@ const ArsipBalom = () => {
 
   return (
     <div className="container">
-    <h1>Data Arsip</h1>
+      <SidebarComponent />
+      <h1>Data Arsip</h1>
 
-<div style={{ display: 'flex', alignItems: 'center' }}>
-  <input
-    type="text"
-    value={kodeArsip}
-    onChange={(e) => setKodeArsip(e.target.value)}
-    onKeyPress={handleKeyPress}
-    style={{
-      marginRight: '10px',
-      flex: '1',
-      padding: '10px',
-      borderRadius: '8px', // Adjust the border-radius as needed
-    }}
-  />
-  <button onClick={fetchData} style={{ padding: '10px', width: '30%' }}>
-    <i className="fa fa-search" style={{ marginRight: '5px' }}></i> Cari
-  </button>
-</div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <input
+          type="text"
+          value={kodeKlasifikasi}
+          onChange={(e) => setKodeKlasifikasi(e.target.value)}
+          onKeyPress={handleKeyPress}
+          style={{
+            marginRight: '10px',
+            flex: '1',
+            padding: '10px',
+            borderRadius: '8px', // Adjust the border-radius as needed
+          }}
+        />
+        <button onClick={fetchData} style={{ padding: '10px', width: '30%' }}>
+          <i className="fa fa-search" style={{ marginRight: '5px' }}></i> Cari
+        </button>
+      </div>
 
-<button
+      <button
         style={{ marginLeft: '10px', padding: '10px' }}
         onClick={handleShowData}
       >
@@ -199,31 +185,19 @@ const ArsipBalom = () => {
       {data && (
         <FormData
           data={data}
-          uraian_berkas={uraian_berkas}
-          setUraianBerkas={setUraianBerkas}
-          jumlahFolder={jumlahFolder}
-          setJumlahFolder={setJumlahFolder}
-          nomorIsiBerkas={nomorIsiBerkas}
-          setNomorIsiBerkas={setNomorIsiBerkas}
+          uraian_informasi={uraian_informasi}
           uraian_isi={uraian_isi}
-          setUraianIsi={setUraianIsi}
           kurun_waktu={kurun_waktu}
-          setKurunWaktu={setKurunWaktu}
-          jumlah_lembar={jumlah_lembar}
-          setJumlahLembar={setJumlahLembar}
-          perkembangan={perkembangan}
-          setPerkembangan={setPerkembangan}
-          lokasi_laci={lokasi_laci}
-          setLokasiLaci={setLokasiLaci}
-          aktif={aktif}
-          setAktif={setAktif}
-          inaktif={inaktif}
-          setInaktif={setInaktif}
-          keterangan={keterangan}
-          setKeterangan={setKeterangan}
-          tanggalDiinput={tanggalDiinput}
-          setTanggalDiinput={setTanggalDiinput}
           folder={folder}
+          lokasi={lokasi}
+          tingkatPerkembangan={tingkatPerkembangan}
+          jumlah_lembar={jumlah_lembar}
+          seturaian_informasi={seturaian_informasi}
+          seturaian_isi={seturaian_isi}
+          setkurun_waktu={setkurun_waktu}
+          setjumlah_lembar={setjumlah_lembar}
+          setLokasi={setLokasi}
+          setTingkatPerkembangan={setTingkatPerkembangan}
           setFolder={setFolder}
           handleRekap={handleRekap}
         />

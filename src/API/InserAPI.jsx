@@ -56,7 +56,7 @@ class Api {
     try {
       console.log('Request payload:', arsipData);
 
-      const insertResponse = await axios.post(`${config.apiUrl}insertData`, arsipData);
+      const insertResponse = await axios.post(`${config.apiUrl}insertBerkasSurat`, arsipData);
       console.log(insertResponse);
       if (insertResponse.data.success) {
         return {
@@ -79,6 +79,27 @@ class Api {
         success: false,
         message: 'Gagal melakukan rekap. Silakan coba lagi.',
       };
+    }
+  }
+  
+  static async updateSurat(nomor_surat, editedData) {
+    try {
+      console.log("rest");
+      const response = await fetch(`${config.apiUrl}editSurat/${nomor_surat}`, {
+        method: 'POST', // Metode permintaan adalah POST
+        headers: {
+          'Content-Type': 'application/json', // Header Content-Type untuk mengindikasikan tipe konten yang dikirim
+        },
+        body: JSON.stringify(editedData), // Mengonversi data yang akan dikirim menjadi JSON
+      });
+      console.log(response);
+      
+      // Mengonversi respons fetch menjadi objek JSON
+      const responseData = await response.json();
+
+      return responseData; // Mengembalikan respons dari server
+    } catch (error) {
+      throw error;
     }
   }
 }
